@@ -4,18 +4,18 @@
 #include <stdbool.h>
 
 // Library options --------------------------- //
-#define MHZ19_PRINT                   1         // ouput formatted print
-#define MHZ19_LIB_ERRORS              1			// Set to 0 to disable error prints
-#define MHZ19_LIB_FLASH_W_DELAY	  	  2			// Delay when writing to flash memory
-#define MHZ19_LIB_FLASH_R_DELAY	  	  1			// Delay when reading from flash memory
-#define MHZ19_LIB_DATA_LEN            9		    // Data protocol length
-#define MHZ19_LIB_TEMP_ADJUST         40		// Value used to adjust the temeperature.
-#define MHZ19_LIB_TIMEOUT_PERIOD      500		// Time out period for response (ms)
-#define MHZ19_LIB_DEFAULT_RANGE       2000		// Default used when arguments not given
-#define MHZ19_LIB_DEFAULT_SPAN        2000		// Default used when arguments not given
-#define MHZ19_LIB_ABC_INTERVAL        4.32e7    // 12 hours in microseconds
-#define MHZ19_LIB_MAX_SPAN            10000     // Maximum allowed span
-#define MHZ19_LIB_MAX_RANGE           65000		// Maximum allowed range
+#define MHZ19_PRINT                   1           // ouput formatted print
+#define MHZ19_LIB_ERRORS              1		  // Set to 0 to disable error prints
+#define MHZ19_LIB_FLASH_W_DELAY	  	  2	  // Delay when writing to flash memory
+#define MHZ19_LIB_FLASH_R_DELAY	  	  1	  // Delay when reading from flash memory
+#define MHZ19_LIB_DATA_LEN            9		  // Data protocol length
+#define MHZ19_LIB_TEMP_ADJUST         40	  // Value used to adjust the temeperature.
+#define MHZ19_LIB_TIMEOUT_PERIOD      500	  // Time out period for response (ms)
+#define MHZ19_LIB_DEFAULT_RANGE       2000	  // Default used when arguments not given
+#define MHZ19_LIB_DEFAULT_SPAN        2000	  // Default used when arguments not given
+#define MHZ19_LIB_ABC_INTERVAL        4.32e7      // 12 hours in miiliseconds 
+#define MHZ19_LIB_MAX_SPAN            10000       // Maximum allowed span
+#define MHZ19_LIB_MAX_RANGE           65000	  // Maximum allowed range
 
 // Config ------------------------------------ //
 #define MHZ19_ABC_PER_OFF        0x00
