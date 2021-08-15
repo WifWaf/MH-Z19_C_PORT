@@ -6,8 +6,8 @@
 // Library options --------------------------- //
 #define MHZ19_PRINT                   1           // ouput formatted print
 #define MHZ19_LIB_ERRORS              1		  // Set to 0 to disable error prints
-#define MHZ19_LIB_FLASH_W_DELAY	  	  2	  // Delay when writing to flash memory
-#define MHZ19_LIB_FLASH_R_DELAY	  	  1	  // Delay when reading from flash memory
+#define MHZ19_LIB_FLASH_W_DELAY	      2	          // Delay when writing to flash memory
+#define MHZ19_LIB_FLASH_R_DELAY	      1	          // Delay when reading from flash memory
 #define MHZ19_LIB_DATA_LEN            9		  // Data protocol length
 #define MHZ19_LIB_TEMP_ADJUST         40	  // Value used to adjust the temeperature.
 #define MHZ19_LIB_TIMEOUT_PERIOD      500	  // Time out period for response (ms)
