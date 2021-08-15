@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 // Library options --------------------------- //
-#define MHZ19_PRINT                   1           // ouput formatted print
+#define MHZ19_PRINT                   1           // ouput formatted print  <--------------- DISABLE PRINTING HERE (USES LISTS)
 #define MHZ19_LIB_ERRORS              1		  // Set to 0 to disable error prints
 #define MHZ19_LIB_FLASH_W_DELAY	      2	          // Delay when writing to flash memory
 #define MHZ19_LIB_FLASH_R_DELAY	      1	          // Delay when reading from flash memory
