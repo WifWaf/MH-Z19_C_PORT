@@ -3,11 +3,10 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <freertos/FreeRTOS.h>
 
+#include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-#include "MH-Z19_link.h"
 #include "MH-Z19.h"
 
 MHZ19_mem_t mhz19_mem;
