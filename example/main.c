@@ -12,8 +12,8 @@
 MHZ19_mem_t mhz19_mem;
 
 int MHZ19_link_available();
-uint8_t MHZ19_link_read_byte();
-void MHZ19_link_write_byte(uint8_t data);
+uint8_t MHZ19_link_read(uint8_t *buff, uint8_t len);
+void MHZ19_link_write(uint8_t *buff, uint8_t len);
 void MHZ19_link_print(char *text);
 void MHZ19_link_delay_ms(int duration);
 int MHZ19_link_elapse_ms();
@@ -22,8 +22,8 @@ void app_main(void)
 {
    // Provided pointer adresses to the typedef structure MHZ19_mem_t //
     mhz19_mem.available = MHZ19_link_available;
-    mhz19_mem.read_byte = MHZ19_link_read_byte;
-    mhz19_mem.write_byte = MHZ19_link_write_byte;
+    mhz19_mem.read_ = MHZ19_link_read;
+    mhz19_mem.write = MHZ19_link_write;
     mhz19_mem.print = MHZ19_link_print;
     mhz19_mem.delay_ms = MHZ19_link_delay_ms;
     mhz19_mem.elapse_ms = MHZ19_link_elapse_ms;
@@ -48,14 +48,14 @@ int MHZ19_link_available()
     return uart_available();
 }
 
-uint8_t MHZ19_link_read_byte()
+void MHZ19_link_read(uint8_t *buff, uint8_t len)
 {
-    return uart_read_byte();
+    uart_read(buff, len);
 }  
 
-void MHZ19_link_write_byte(uint8_t data)
+void MHZ19_link_write(uint8_t *data, uint8_t len)
 {
-    uart_write_byte(data);
+    uart_write(data, len);
 }
 
 void MHZ19_link_print(char *text)
