@@ -4,18 +4,18 @@
 #include <stdbool.h>
 
 // Library options --------------------------- //
-#define MHZ19_PRINT                   1           // ouput formatted print  <--------------- DISABLE PRINTING HERE (USES LISTS)
-#define MHZ19_LIB_ERRORS              1		  // Set to 0 to disable error prints
-#define MHZ19_LIB_FLASH_W_DELAY	      2	          // Delay when writing to flash memory
-#define MHZ19_LIB_FLASH_R_DELAY	      1	          // Delay when reading from flash memory
-#define MHZ19_LIB_DATA_LEN            9		  // Data protocol length
-#define MHZ19_LIB_TEMP_ADJUST         40	  // Value used to adjust the temeperature.
-#define MHZ19_LIB_TIMEOUT_PERIOD      500	  // Time out period for response (ms)
-#define MHZ19_LIB_DEFAULT_RANGE       2000	  // Default used when arguments not given
-#define MHZ19_LIB_DEFAULT_SPAN        2000	  // Default used when arguments not given
-#define MHZ19_LIB_ABC_INTERVAL        4.32e7      // 12 hours in miiliseconds 
-#define MHZ19_LIB_MAX_SPAN            10000       // Maximum allowed span
-#define MHZ19_LIB_MAX_RANGE           65000	  // Maximum allowed range
+#define MHZ19_PRINT                   1         // ouput formatted print
+#define MHZ19_LIB_ERRORS              1			// Set to 0 to disable error prints
+#define MHZ19_LIB_FLASH_W_DELAY	  	  2			// Delay when writing to flash memory
+#define MHZ19_LIB_FLASH_R_DELAY	  	  1			// Delay when reading from flash memory
+#define MHZ19_LIB_DATA_LEN            9		    // Data protocol length
+#define MHZ19_LIB_TEMP_ADJUST         40		// Value used to adjust the temeperature.
+#define MHZ19_LIB_TIMEOUT_PERIOD      500		// Time out period for response (ms)
+#define MHZ19_LIB_DEFAULT_RANGE       2000		// Default used when arguments not given
+#define MHZ19_LIB_DEFAULT_SPAN        2000		// Default used when arguments not given
+#define MHZ19_LIB_ABC_INTERVAL        4.32e7    // 12 hours in microseconds
+#define MHZ19_LIB_MAX_SPAN            10000     // Maximum allowed span
+#define MHZ19_LIB_MAX_RANGE           65000		// Maximum allowed range
 
 // Config ------------------------------------ //
 #define MHZ19_ABC_PER_OFF        0x00
@@ -46,15 +46,16 @@ enum ERRORCODE
 typedef struct
 {
     int (*available)(void);
-    uint8_t (*read_byte)(void);  
-    void (*write_byte)(uint8_t); 
+    void (*read)(uint8_t *buff, uint8_t len);  
+    void (*write)(uint8_t *buff, uint8_t len); 
     void (*print)(char *);
     void (*delay_ms)(int);
     int (*elapse_ms)(void);
 
     int8_t cfg;                                // =| 0x04; Default settings have MHZ19_FILTER_CLR_EN
     uint8_t errorCode;
-
+    unsigned long timer_abc; 
+    
     struct data
     {
         uint8_t in[MHZ19_LIB_DATA_LEN];		    // Holds generic in data
@@ -84,6 +85,8 @@ bool MHZ19_setStorage(uint16_t address, uint8_t val);
 
 /* request CO2 values, 2 seperate commands can return CO2 values; 0x85 and 0x86 */
 int MHZ19_getCO2(bool isunLimited);
+
+uint8_t MHZ19_get_errorcode();
 
 /* returns the "raw" CO2 value of unknown units */
 unsigned int MHZ19_getCO2Raw();

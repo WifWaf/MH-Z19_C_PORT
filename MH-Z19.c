@@ -96,7 +96,11 @@ MHZ19_mem_t *_mhz_cfg;
 
 void MHZ19_begin(MHZ19_mem_t *mhz_cfg)
 {  
+    // Set local config
     _mhz_cfg = mhz_cfg;
+
+    // Update ABC check period to now (will be set when autocalibration is called).
+    _mhz_cfg->timer_abc = 0;
 
     /* establish connection */
     MHZ19_verify();
@@ -153,6 +157,11 @@ bool MHZ19_setStorage(uint16_t address, uint8_t val)
 }
 
 /*########################-Get Functions-##########################*/
+
+uint8_t MHZ19_get_errorcode()
+{
+    return _mhz_cfg->errorCode;
+}
 
 int MHZ19_getCO2(bool isunLimited)
 { 
@@ -569,8 +578,8 @@ void MHZ19_write(uint8_t toSend[])
     if (_mhz_cfg->cfg & MHZ19_COMM_PRNT_EN)
         MHZ19_printstream(toSend, true, _mhz_cfg->errorCode);
 #endif
-    for (uint8_t i = 0; i < 9; i++)
-        _mhz_cfg->write_byte(toSend[i]);
+
+    _mhz_cfg->write(toSend, 9);
 }
 
 uint8_t MHZ19_read(uint8_t inBytes[], uint8_t comm)
@@ -600,8 +609,7 @@ uint8_t MHZ19_read(uint8_t inBytes[], uint8_t comm)
         }
     }
     
-    for(uint8_t i = 0; _mhz_cfg->available() > 0; i++)
-        inBytes[i] = _mhz_cfg->read_byte();
+    _mhz_cfg->read(inBytes, MHZ19_LIB_DATA_LEN);
 
     if (_mhz_cfg->errorCode == RESULT_TIMEOUT)
         return _mhz_cfg->errorCode;
@@ -665,12 +673,11 @@ uint8_t MHZ19_getPage(uint16_t address)
 
 void MHZ19_ABCCheck()
 {
-	static unsigned long timer_abc;          // timer for tracking the next ABC cycle skip
     /* check timer interval if dynamic hours have passed and if ABC_OFF was set to true */
-	if (((_mhz_cfg->available() - timer_abc) >= MHZ19_LIB_ABC_INTERVAL) && (_mhz_cfg->cfg & MHZ19_ABC_DIS))
+	if (((_mhz_cfg->elapse_ms() - _mhz_cfg->timer_abc) >= MHZ19_LIB_ABC_INTERVAL) && (_mhz_cfg->cfg & MHZ19_ABC_DIS))
 	{
 		/* update timer inerval */
-		timer_abc = _mhz_cfg->available();
+		_mhz_cfg->timer_abc = _mhz_cfg->elapse_ms();
 		
 		/* construct command to skip next ABC cycle */
 		MHZ19_provisioning(MHZ19_COM_ABC, MHZ19_ABC_PERIOD_OFF);
@@ -682,7 +689,7 @@ void MHZ19_cleanUp(uint8_t cnt)
     uint8_t eject = 0;
     for(uint8_t x = 0; x < cnt; x++)
     {
-        eject = _mhz_cfg->read_byte();
+        _mhz_cfg->read(&eject, 1);
         MHZ_LOGW(MHZ19_TAG, "Clearing uint8_t: %d", eject);       
     }
 }
