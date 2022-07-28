@@ -62,9 +62,6 @@ void MHZ19_constructCommand(uint8_t comm, int inData, uint8_t extra);
 /* generates a checksum for sending and verifying incoming data */
 uint8_t MHZ19_getCRC(uint8_t inuint8_ts[]);
 
-/* Returns what appears to be an offset */ 		//<----- knowledgable people might have success using against the raw value
-float MHZ19_getTemperatureOffset();
-
 /* Sends commands to the sensor */
 void MHZ19_write(uint8_t toSend[]);
 
@@ -108,6 +105,13 @@ void MHZ19_begin(MHZ19_mem_t *mhz_cfg)
     /* check if successful */
     if (_mhz_cfg->errorCode != RESULT_OK) 
         MHZ_LOGE(MHZ19_TAG, "Initial communication errorCode recieved");
+
+    /* What FW version is the sensor running? */
+    char myVersion[4];          
+    MHZ19_getVersion(myVersion);
+    
+    /* Store the major version number (assumed to be less than 10) */
+    _mhz_cfg->fw_ver = myVersion[1];
 }
 
 /* #################################-Set Functions-###################################### */
@@ -277,55 +281,25 @@ float MHZ19_getTransmittance()
         return 0;
 }
 
-float MHZ19_getTemperature(bool isFloat)
+float MHZ19_getTemperature()
 {
-    MHZ19_provisioning(MHZ19_COM_CO2_LIM, 0);
-
-    if(isFloat)
+    if(_mhz_cfg->fw_ver < 5)
     {
-        static uint8_t baseTemp = 0;    // Temp has a common base value when determing float   
-        static uint8_t offSet = 0;      // Offset is the value to be removed form the final value
-        static bool isSet = false;   // Flag for if the base temp was recorded in previous iterations
+        MHZ19_provisioning(MHZ19_COM_CO2_LIM, 0);
 
-        if(!isSet)
-        {
-            baseTemp = (_mhz_cfg->block.in[4] - MHZ19_LIB_TEMP_ADJUST);
-            offSet -= (uint8_t)MHZ19_getTemperatureOffset();
-            isSet = true;
-        }   
-
-        if(_mhz_cfg->errorCode == RESULT_OK)
-        {
-           float buff = baseTemp;
-           buff += offSet;
-           return buff;
-        }
-    }
-    
-    else if(!isFloat)
-    {
         if (_mhz_cfg->errorCode == RESULT_OK)
             return (_mhz_cfg->block.in[4] - MHZ19_LIB_TEMP_ADJUST);
     }
-    
-    return -273.15;    
-}
- 
-float MHZ19_getTemperatureOffset()
-{
-    MHZ19_provisioning(MHZ19_COM_CO2_UNLIM, 0);
-
-    if (_mhz_cfg->errorCode == RESULT_OK)
+    else
     {
-        /* Value appears to be for CO2 offset (useful for deriving CO2 from raw?) */
-        /* Adjustments and calculations are based on observations of temp behavour */
-        float calc = (((_mhz_cfg->block.in[2] - 8) * 1500) + ((_mhz_cfg->block.in[3] * 100) * 1 / 17));
-        calc /= 100;
-        return calc;
+        MHZ19_provisioning(MHZ19_COM_CO2_UNLIM, 0);
+
+        if (_mhz_cfg->errorCode == RESULT_OK)
+             return (float)(((int)_mhz_cfg->block.in[2] << 8) | _mhz_cfg->block.in[3]) / 100;
     }
 
-    return -273.15;
-} 
+    return -273.15;    
+}
 
 int MHZ19_getRange()
 {

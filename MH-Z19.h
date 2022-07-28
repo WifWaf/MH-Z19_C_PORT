@@ -55,7 +55,8 @@ typedef struct
     int8_t cfg;                                // =| 0x04; Default settings have MHZ19_FILTER_CLR_EN
     uint8_t errorCode;
     unsigned long timer_abc; 
-    
+    uint8_t fw_ver;
+
     struct data
     {
         uint8_t in[MHZ19_LIB_DATA_LEN];		    // Holds generic in data
@@ -94,8 +95,8 @@ unsigned int MHZ19_getCO2Raw();
 /* returns Raw CO2 value as a % of transmittance */		//<--- needs work to understand
 float MHZ19_getTransmittance();
 
-/*  returns temperature using command 134 or 135 if isFloat = true */
-float MHZ19_getTemperature(bool isFloat);
+/*  returns temperature using command 133 or 134 */
+float MHZ19_getTemperature();
 
 /* reads range using command 153 */
 int MHZ19_getRange();
